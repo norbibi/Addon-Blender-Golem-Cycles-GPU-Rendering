@@ -3,5 +3,5 @@
 This addon allow decentralized Cycles GPU rendering on top of Golem Network.
 
 <p align="center">
-	<img src="panel.png" width="100%"> 
+	<img src="panel.png" width="65%"> 
 </p>
