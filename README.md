@@ -6,3 +6,9 @@ Compatible Windows/Linux
 <p align="center">
 	<img src="panel.png" width="65%"> 
 </p>
+
+Requirements: yagna requestor 0.12.2, blender 3.5 min
+
+Notes:
+ - yagna must be launched and must have enought tGLM (testnet) before starting render.
+ - Non blocking addon, blender's interface remain available during rendering.
