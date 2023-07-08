@@ -12,3 +12,4 @@ Requirements: yagna requestor 0.12.2, blender 3.0.0 min
 Notes:
  - yagna must be launched and must have enought tGLM (testnet) before starting render.
  - Non blocking addon, blender's interface remain available during rendering.
+ - Error management is missing (insufficient funds, yagna not launched, ...)
