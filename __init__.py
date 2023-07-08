@@ -2,6 +2,7 @@ bl_info = {
     "name": "Golem Cycles GPU Rendering",
     "author": "Norbert Mauger",
     "version": (0, 1),
+    "blender": (3, 0, 0),
     "location": "Properties > Render",
     "description": "Decentralized Cycles GPU Rendering",
     "category": "Render",
