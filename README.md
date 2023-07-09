@@ -13,3 +13,7 @@ Notes:
  - yagna must be launched and must have enought tGLM (testnet) before starting render.
  - Non blocking addon, blender's interface remain available during rendering.
  - Error management is missing (insufficient funds, yagna not launched, ...)
+
+Coming soon:
+ - Error management
+ - Payload encryption at volume level
