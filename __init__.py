@@ -53,13 +53,9 @@ frames = None
 
 @persistent
 def init(scene):
-    bpy.context.scene.golem_settings.start_frame.default = bpy.context.scene.frame_start
-    bpy.context.scene.golem_settings.start_frame.min = bpy.context.scene.frame_start
-    bpy.context.scene.golem_settings.start_frame.max = bpy.context.scene.frame_end
-    bpy.context.scene.golem_settings.end_frame.default = bpy.context.scene.frame_end
-    bpy.context.scene.golem_settings.end_frame.min = bpy.context.scene.frame_start
-    bpy.context.scene.golem_settings.end_frame.max = bpy.context.scene.frame_end
-    bpy.context.scene.golem_settings.step_frame.max = bpy.context.scene.render.fps
+	bpy.context.scene.golem_settings.start_frame = bpy.context.scene.frame_start
+	bpy.context.scene.golem_settings.end_frame = bpy.context.scene.frame_end
+	bpy.context.scene.golem_settings.step_frame = bpy.context.scene.render.fps
 
 class Golem_Render(bpy.types.Operator):
     bl_idname = "golem_render.render"
@@ -182,8 +178,11 @@ class Golem_Cancel(bpy.types.Operator):
 ##########################################################################################################
 
 def set_start_frame(self, value):
-    if value <= self["end_frame"]:
-        self["start_frame"] = value
+	if value <= self["end_frame"]:
+		if value >= bpy.context.scene.frame_start:
+			self["start_frame"] = value
+		else:
+			self["start_frame"] = bpy.context.scene.frame_start
 
 def get_start_frame(self):
     if "start_frame" not in self.keys():
@@ -191,8 +190,11 @@ def get_start_frame(self):
     return self["start_frame"]
 
 def set_end_frame(self, value):
-    if value >= self["start_frame"]:
-        self["end_frame"] = value
+	if value >= self["start_frame"]:
+		if value <= bpy.context.scene.frame_end:
+			self["end_frame"] = value
+		else:
+			self["end_frame"] = bpy.context.scene.frame_end
 
 def get_end_frame(self):
     if "end_frame" not in self.keys():
@@ -212,9 +214,9 @@ class GolemRenderSettings(bpy.types.PropertyGroup):
     memory: bpy.props.IntProperty(name="Memory (GB)", default=8, min=1, max=1024)
     storage: bpy.props.IntProperty(name="Storage (GB)", default=8, min=1, max=1024)
     threads: bpy.props.IntProperty(name="Threads", default=8, min=1, max=128)
-    start_frame: bpy.props.IntProperty(name="Start", default=0, min=0, max=0, set=set_start_frame, get=get_start_frame)
-    end_frame: bpy.props.IntProperty(name="End", default=0, min=0, max=0, set=set_end_frame, get=get_end_frame)
-    step_frame: bpy.props.IntProperty(name="Step", default=1, min=1, max=1)
+    start_frame: bpy.props.IntProperty(name="Start", min=1, set=set_start_frame, get=get_start_frame)
+    end_frame: bpy.props.IntProperty(name="End", min=1, set=set_end_frame, get=get_end_frame)
+    step_frame: bpy.props.IntProperty(name="Step", default=1, min=1, max=100)
     budget: bpy.props.IntProperty(name="Budget (GLM)", default=10, min=1, max=100)
     start_price: bpy.props.IntProperty(name="start", default=0, min=0, max=1000)
     cpu_price: bpy.props.IntProperty(name="cpu/h", default=0, min=0, max=1000)
@@ -342,6 +344,7 @@ def unregister():
     bpy.utils.unregister_class(Golem_Render)
     bpy.utils.unregister_class(Golem_Cancel)
     bpy.utils.unregister_class(GolemRenderSettings)
+    del bpy.types.Scene.golem_settings
 
 #######################################################################################################################
 
