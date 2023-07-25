@@ -4,3 +4,6 @@
 
 # Env files
 .env
+
+# Output files
+out/*
