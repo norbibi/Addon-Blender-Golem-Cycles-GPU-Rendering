@@ -237,9 +237,10 @@ class GolemRenderSettings(bpy.types.PropertyGroup):
     network: bpy.props.EnumProperty(name="Network",
             items=(
                 ("goerli", "Goerli (ETH)", ""),
+                ("mumbai", "Mumbai (MATIC)", ""),
                 ("polygon", "Polygon (MATIC)", "")
             ),
-            default="goerli"
+            default="mumbai"
         )
 
 ##########################################################################################################

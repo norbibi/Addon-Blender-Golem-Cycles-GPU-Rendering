@@ -1,0 +1,9 @@
+# Temp files
+.DS_Store
+.thumbs.db
+
+# Env files
+.env
+
+# Output files
+out/*
