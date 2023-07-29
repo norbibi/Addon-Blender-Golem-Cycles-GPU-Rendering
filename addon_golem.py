@@ -17,12 +17,16 @@ from tempfile import TemporaryDirectory
 from multiprocessing import Process, Value, Queue
 from decimal import Decimal
 
-def init_payment(network):
+def init_payment(queue, network):
     cmd = ["yagna", "payment", "init", "--sender", "--network=" + network, "--driver=erc20"]
-    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
-        for line in proc.stderr:
-            if "Error: Called service `/local/identity/Get` is unavailable" in line:
-                queue.put('yagna_not_started')
+    try:
+        with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+            for line in proc.stderr:
+                if "Error: Called service `/local/identity/Get` is unavailable" in line:
+                    queue.put('yagna_not_started')
+    except:
+        queue.put('yagna_not_installed')
+        return
 
 def get_appkey():
     cmd = ["yagna", "app-key", "list", "--json"]
@@ -164,7 +168,7 @@ def render(main_blend_file, project_directory, output_directory, frames, queue, 
     importlib.reload(site)
     from yapapi.log import enable_default_logger
 
-    init_payment(network)
+    init_payment(queue, network)
     app_key = get_appkey()
     os.environ['YAGNA_APPKEY'] = app_key
 
@@ -181,7 +185,7 @@ def render(main_blend_file, project_directory, output_directory, frames, queue, 
             queue = queue,
             payment_driver = "erc20",
             payment_network = network,
-            subnet_tag = "public",
+            subnet_tag = "norbert",
             budget = budget,
             interval_payment = 0,
             start_price = start_price,

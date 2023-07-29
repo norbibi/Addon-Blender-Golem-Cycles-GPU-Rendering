@@ -53,9 +53,9 @@ frames = None
 
 @persistent
 def init(scene):
-	bpy.context.scene.golem_settings.start_frame = bpy.context.scene.frame_start
-	bpy.context.scene.golem_settings.end_frame = bpy.context.scene.frame_end
-	bpy.context.scene.golem_settings.step_frame = bpy.context.scene.render.fps
+    bpy.context.scene.golem_settings.start_frame = bpy.context.scene.frame_start
+    bpy.context.scene.golem_settings.end_frame = bpy.context.scene.frame_end
+    bpy.context.scene.golem_settings.step_frame = bpy.context.scene.render.fps
 
 class Golem_Render(bpy.types.Operator):
     bl_idname = "golem_render.render"
@@ -156,6 +156,15 @@ def update_progress():
             progress_btn = False
             providers_btn = False
             cancel_btn = False
+        elif msg == "yagna_not_installed":
+            ShowMessageBox("Please install yagna and add to PATH", "Yagna error", 'ERROR')
+            running = False
+            render_process.terminate()
+            bpy.app.timers.unregister(update_progress)
+            render_btn = True
+            progress_btn = False
+            providers_btn = False
+            cancel_btn = False
         elif msg == "insufficient_funds":
             ShowMessageBox("Please get funds with command: yagna payment fund", "Insufficient funds", 'ERROR')
             running = False
@@ -196,11 +205,11 @@ class Golem_Cancel(bpy.types.Operator):
 ##########################################################################################################
 
 def set_start_frame(self, value):
-	if value <= self["end_frame"]:
-		if value >= bpy.context.scene.frame_start:
-			self["start_frame"] = value
-		else:
-			self["start_frame"] = bpy.context.scene.frame_start
+    if value <= self["end_frame"]:
+        if value >= bpy.context.scene.frame_start:
+            self["start_frame"] = value
+        else:
+            self["start_frame"] = bpy.context.scene.frame_start
 
 def get_start_frame(self):
     if "start_frame" not in self.keys():
@@ -208,11 +217,11 @@ def get_start_frame(self):
     return self["start_frame"]
 
 def set_end_frame(self, value):
-	if value >= self["start_frame"]:
-		if value <= bpy.context.scene.frame_end:
-			self["end_frame"] = value
-		else:
-			self["end_frame"] = bpy.context.scene.frame_end
+    if value >= self["start_frame"]:
+        if value <= bpy.context.scene.frame_end:
+            self["end_frame"] = value
+        else:
+            self["end_frame"] = bpy.context.scene.frame_end
 
 def get_end_frame(self):
     if "end_frame" not in self.keys():
