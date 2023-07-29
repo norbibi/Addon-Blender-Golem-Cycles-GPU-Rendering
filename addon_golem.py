@@ -19,7 +19,10 @@ from decimal import Decimal
 
 def init_payment(network):
     cmd = ["yagna", "payment", "init", "--sender", "--network=" + network, "--driver=erc20"]
-    subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+        for line in proc.stderr:
+            if "Error: Called service `/local/identity/Get` is unavailable" in line:
+                queue.put('yagna_not_started')
 
 def get_appkey():
     cmd = ["yagna", "app-key", "list", "--json"]
@@ -156,7 +159,7 @@ async def main( queue=None,
         async for task in completed_tasks:
             frames.remove(int(task.result))
 
-def render(main_blend_file, project_directory, output_directory, frames, queue, network, budget, start_price, cpu_price, env_price, timeout_global, timeout_upload, timeout_render, workers, memory, storage, threads, format):      
+def render(main_blend_file, project_directory, output_directory, frames, queue, network, budget, start_price, cpu_price, env_price, timeout_global, timeout_upload, timeout_render, workers, memory, storage, threads, format):
 
     importlib.reload(site)
     from yapapi.log import enable_default_logger
@@ -197,7 +200,9 @@ def render(main_blend_file, project_directory, output_directory, frames, queue, 
             output_dir = output_directory,
             project_directory = project_directory
         ))
-    loop.run_until_complete(task)
 
-if __name__ == "__main__":
-    register()
+    try:
+        loop.run_until_complete(task)
+    except:
+        queue.put('insufficient_funds')
+        return

@@ -147,6 +147,24 @@ def update_progress():
             bpy.context.scene.golem_settings.providers += 1
         elif msg == "remove_provider":
             bpy.context.scene.golem_settings.providers -= 1
+        elif msg == "yagna_not_started":
+            ShowMessageBox("Please start yagna with command: yagna service run", "Yagna error", 'ERROR')
+            running = False
+            render_process.terminate()
+            bpy.app.timers.unregister(update_progress)
+            render_btn = True
+            progress_btn = False
+            providers_btn = False
+            cancel_btn = False
+        elif msg == "insufficient_funds":
+            ShowMessageBox("Please get funds with command: yagna payment fund", "Insufficient funds", 'ERROR')
+            running = False
+            render_process.terminate()
+            bpy.app.timers.unregister(update_progress)
+            render_btn = True
+            progress_btn = False
+            providers_btn = False
+            cancel_btn = False
     except:
         pass
 
@@ -240,7 +258,7 @@ class GolemRenderSettings(bpy.types.PropertyGroup):
                 ("mumbai", "Mumbai (MATIC)", ""),
                 ("polygon", "Polygon (MATIC)", "")
             ),
-            default="mumbai"
+            default="goerli"
         )
 
 ##########################################################################################################
@@ -346,8 +364,3 @@ def unregister():
     bpy.utils.unregister_class(Golem_Cancel)
     bpy.utils.unregister_class(GolemRenderSettings)
     del bpy.types.Scene.golem_settings
-
-#######################################################################################################################
-
-if __name__ == "__main__":
-    register()
