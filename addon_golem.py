@@ -6,7 +6,7 @@ import subprocess
 import time
 import logging
 import signal
-import ensurepip
+import platform
 import json
 import asyncio
 import tempfile
@@ -171,6 +171,9 @@ def render(main_blend_file, project_directory, output_directory, frames, queue, 
     init_payment(queue, network)
     app_key = get_appkey()
     os.environ['YAGNA_APPKEY'] = app_key
+
+    if platform.system() == "Linux":
+        os.environ['SSL_CERT_FILE'] = "/etc/ssl/certs/ca-certificates.crt"
 
     enable_default_logger(
         log_file=output_directory + '/requestor.log',
